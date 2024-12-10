@@ -1,6 +1,0 @@
-# dune init proj bt_bag
-# OCAMLPARAM: unset
-# Shared cache: disabled
-# Shared cache location: /home/pmpknu/.cache/dune/db
-# Workspace root: /home/pmpknu/Documents/5_sem/fp/lab2/bt_bag
-# Auto-detected concurrency: 6
