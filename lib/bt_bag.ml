@@ -17,18 +17,18 @@ end
 module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
     type key = Ord.t
 
-    type 'a bag = Leaf | Node of 'a bag * key * int * 'a bag
+    type 'a bag = Empty | Node of 'a bag * key * int * 'a bag
 
-    let empty = Leaf
+    let empty = Empty
     let is_empty = function
-        | Leaf -> true
+        | Empty -> true
         | _ -> false
 
     let rec add bag x = 
       match bag with
-      | Leaf -> Node (Leaf, x, 1, Leaf)
+      | Empty -> Node (Empty, x, 1, Empty)
       | Node (left, key, count, right) ->
-          if x = key then
+          if Ord.compare x key = 0 then
             Node (left, key, count + 1, right)
           else if Ord.compare x key < 0 then
             Node (add left x, key, count, right)
