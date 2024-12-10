@@ -14,7 +14,7 @@ end
 module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
     type key = Ord.t
 
-    type 'a bag = Leaf | Node of 'a bag * key * 'a * 'a bag
+    type 'a bag = Leaf | Node of 'a bag * key * 'a list * 'a bag
 
     let empty = Leaf
     let is_empty = function
