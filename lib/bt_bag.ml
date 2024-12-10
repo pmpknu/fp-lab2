@@ -5,7 +5,9 @@ module type Bag = sig
     val is_empty : 'a btree -> bool
 
     val add : 'a btree -> key -> 'a btree
-    (* add bag x adds x to the bag, returning an element that can later be removed from the bag. add runs in constant time *)
+
+    val elements : 'a btree -> key list
+
 end
 
 module type OrderedType = sig
@@ -34,4 +36,9 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
             Node {left = add left x; value = key; count; right}
           else
             Node {left; value = key; count; right = add right x}
+
+    let rec elements = function
+      | Empty -> []
+      | Node {left; value; count; right} ->
+          (elements left) @ (List.init count (fun _ -> value)) @ (elements right)
 end
