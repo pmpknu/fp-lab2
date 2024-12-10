@@ -1,10 +1,10 @@
 module type Bag = sig
     type key
-    type 'a bag
-    val empty : 'a bag
-    val is_empty : 'a bag -> bool
+    type 'a btree
+    val empty : 'a btree
+    val is_empty : 'a btree -> bool
 
-    val add : 'a bag -> key -> 'a bag
+    val add : 'a btree -> key -> 'a btree
     (* add bag x adds x to the bag, returning an element that can later be removed from the bag. add runs in constant time *)
 end
 
@@ -17,7 +17,7 @@ end
 module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
     type key = Ord.t
 
-    type 'a bag = Empty | Node of 'a bag * key * int * 'a bag
+    type 'a btree = Empty | Node of {left:'a btree; value:key; count:int; right:'a btree}
 
     let empty = Empty
     let is_empty = function
@@ -26,12 +26,12 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
 
     let rec add bag x = 
       match bag with
-      | Empty -> Node (Empty, x, 1, Empty)
-      | Node (left, key, count, right) ->
+      | Empty -> Node {left = Empty; value = x; count = 1; right = Empty}
+      | Node {left; value = key; count; right} ->
           if Ord.compare x key = 0 then
-            Node (left, key, count + 1, right)
+            Node {left; value = key; count = count + 1; right}
           else if Ord.compare x key < 0 then
-            Node (add left x, key, count, right)
+            Node {left = add left x; value = key; count; right}
           else
-            Node (left, key, count, add right x)
+            Node {left; value = key; count; right = add right x}
 end
