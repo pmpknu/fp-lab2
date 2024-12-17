@@ -5,6 +5,11 @@ module IntBag = Bt_bag.Make(struct
     let compare = compare
   end)
 
+module CharBag = Bt_bag.Make(struct
+    type t = char
+    let compare = compare
+  end)
+
 let test_add_case () =
   let bag = IntBag.empty in
   let bag = IntBag.add 1 bag in
@@ -117,13 +122,39 @@ let test_fold_right_zero_elements () =
   let expected = 0 in
   check int "same elements in fold right with no elements" expected result
 
+let test_fold_left_two_elements () =
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let result = IntBag.fold_left (fun acc key count -> acc - key * count) 100 bag in
+  let expected = ((100-1)-2) in
+  check int "same elements in fold_left with two elements with substraction function" expected result
+
+  let test_fold_left_three_elements () =
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.add 3 bag in
+  let result = IntBag.fold_left (fun acc key count -> acc - key * count) 100 bag in
+  let expected = ((100-1)-2)-3 in
+  check int "same elements in fold_left with three elements with substraction function" expected result
+
 let test_fold_right_two_elements () =
   let bag = IntBag.empty in
   let bag = IntBag.add 1 bag in
   let bag = IntBag.add 2 bag in
-  let result = IntBag.fold_right (fun key count acc -> acc - key * count) bag 0 in
-  let expected = 1 - (2 - 0) in
+  let result = IntBag.fold_right (fun acc key count -> acc - key * count) bag 100 in
+  let expected = 1 - (2 - 100) in
   check int "same elements in fold_right with two elements with substraction function" expected result
+
+  let test_fold_right_three_elements () =
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.add 3 bag in
+  let result = IntBag.fold_right (fun acc key count -> acc - key * count) bag 100 in
+  let expected = 1 - (2 - (3 - 100)) in
+  check int "same elements in fold_right with three elements with substraction function" expected result
 
 let test_fold_left () = 
   let bag = IntBag.empty in
@@ -142,7 +173,7 @@ let test_fold_left_right_difference_case () =
   let bag = IntBag.add 10 bag in
   let bag = IntBag.add 15 bag in
   let result_left = IntBag.fold_left (fun acc key count -> acc - key * count) 0 bag in
-  let result_right = IntBag.fold_right (fun key count acc -> acc - key * count) bag 0 in
+  let result_right = IntBag.fold_right (fun acc key count -> acc - key * count) bag 0 in
   let expected_left = ((0 - 5) - 10) - 15 in
   let expected_right = 5 - (10 - (15 - 0)) in
   check int "same left" expected_left result_left;
@@ -187,6 +218,9 @@ let () =
         test_case "test_fold_right" `Quick test_fold_right;
         test_case "test_fold_right_zero_elements" `Quick test_fold_right_zero_elements;
         test_case "test_fold_right_two_elements" `Quick test_fold_right_two_elements;
+        test_case "test_fold_right_three_elements" `Quick test_fold_right_three_elements;
+        test_case "test_fold_left_two_elements" `Quick test_fold_left_two_elements;
+        test_case "test_fold_left_three_elements" `Quick test_fold_left_three_elements;
         test_case "test_fold_left" `Quick test_fold_left;
         test_case "test_fold_left_right_difference" `Quick test_fold_left_right_difference_case
       ]
