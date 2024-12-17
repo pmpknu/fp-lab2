@@ -79,6 +79,22 @@ let test_merge () =
   let expected = [1; 1; 1; 2; 2; 2; 2; 3; 3; 3] in
   check (list int) "same elements" expected result
 
+let test_remove () =
+  let module IntBag = Bt_bag.Make(struct
+      type t = int
+      let compare = compare
+    end) in
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 3 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.remove 1 bag in
+  let result = IntBag.elements bag in
+  let expected = [1; 2; 2; 3] in
+  check (list int) "same elements" expected result
+
 let () =
   run "bt_bag tests" [
     (
@@ -98,5 +114,9 @@ let () =
     (
       "test_merge",
       [test_case "test_merge" `Quick test_merge]
+    );
+    (
+      "test_remove",
+      [test_case "test_remove" `Quick test_remove]
     )
   ]

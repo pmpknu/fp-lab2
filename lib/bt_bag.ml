@@ -13,6 +13,8 @@ module type Bag = sig
     val find_opt : key -> 'a btree -> int option
 
     val merge : 'a btree -> 'a btree -> 'a btree
+
+    val remove : key -> 'a btree -> 'a btree
 end
 
 module type OrderedType = sig
@@ -67,5 +69,13 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
       let t2_values = elements t2 in
       let add_to_tree t k = add k t in
       List.fold_left add_to_tree t1 t2_values
+
+    let rec remove x = function
+      | Empty -> Empty
+      | Node {left; value; count; right} ->
+          match Ord.compare x value with
+          | 0 -> if count = 1 then merge left right else Node {left; value; count = count - 1; right}
+          | n when n < 0 -> Node {left = remove x left; value; count; right}
+          | _ -> Node {left; value; count; right = remove x right}
 
 end
