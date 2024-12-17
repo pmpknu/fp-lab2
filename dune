@@ -1,0 +1,6 @@
+(rule
+ (alias lint)
+ (action
+  (progn
+   (echo "Running zanuda on OCaml files...")
+   (run bash -c "zanuda lib/*.ml"))))
