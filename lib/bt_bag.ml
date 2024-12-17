@@ -4,7 +4,7 @@ module type Bag = sig
     val empty : 'a btree
     val is_empty : 'a btree -> bool
 
-    val add : 'a btree -> key -> 'a btree
+    val add : key -> 'a btree -> 'a btree
 
     val elements : 'a btree -> key list
 
@@ -26,16 +26,16 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
         | Empty -> true
         | _ -> false
 
-    let rec add bag x = 
+    let rec add x bag = 
       match bag with
       | Empty -> Node {left = Empty; value = x; count = 1; right = Empty}
       | Node {left; value = key; count; right} ->
           if Ord.compare x key = 0 then
             Node {left; value = key; count = count + 1; right}
           else if Ord.compare x key < 0 then
-            Node {left = add left x; value = key; count; right}
+            Node {left = add x left; value = key; count; right}
           else
-            Node {left; value = key; count; right = add right x}
+            Node {left; value = key; count; right = add x right}
 
     let rec elements = function
       | Empty -> []
