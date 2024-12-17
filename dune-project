@@ -5,22 +5,17 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github pmpknu/fp-lab2))
 
-(authors "Author Name")
+(authors "Dan Gorlyakov")
 
-(maintainers "Maintainer Name")
+(license MIT)
 
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+; (documentation https://url/to/documentation)
 
 (package
  (name bt_bag)
- (synopsis "A short synopsis")
- (description "A longer description")
+ (synopsis "fp lab2")
+ (description "implementation of bag with binary tree")
  (depends ocaml dune)
- (tags
-  (topics "to describe" your project)))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
+)
