@@ -111,17 +111,6 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
       | Node {left; value; count; right} ->
           fold_right f left (f value count (fold_right f right accu))
 
-    (**
-    let rec fold_right f lst acc = match lst with
-      | [] -> acc
-      | h :: t -> f h (fold_right f t acc)
-
-    let rec fold_left f acc lst = match lst with
-      | [] -> acc
-      | h :: t -> fold_left f (f acc h) t
-    *)
-
-
     let rec fold_left f accu s =
     match s with
     | Empty -> accu
