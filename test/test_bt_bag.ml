@@ -57,6 +57,28 @@ let test_find_opt_case () =
   check (option int) "find 3" (Some 1) (IntBag.find_opt 3 bag);
   check (option int) "find 4" None (IntBag.find_opt 4 bag)
 
+let test_merge () =
+  let module IntBag = Bt_bag.Make(struct
+      type t = int
+      let compare = compare
+    end) in
+  let bag1 = IntBag.empty in
+  let bag1 = IntBag.add 1 bag1 in
+  let bag1 = IntBag.add 2 bag1 in
+  let bag1 = IntBag.add 1 bag1 in
+  let bag1 = IntBag.add 3 bag1 in
+  let bag1 = IntBag.add 2 bag1 in
+  let bag2 = IntBag.empty in
+  let bag2 = IntBag.add 1 bag2 in
+  let bag2 = IntBag.add 2 bag2 in
+  let bag2 = IntBag.add 2 bag2 in
+  let bag2 = IntBag.add 3 bag2 in
+  let bag2 = IntBag.add 3 bag2 in
+  let bag = IntBag.merge bag1 bag2 in
+  let result = IntBag.elements bag in
+  let expected = [1; 1; 1; 2; 2; 2; 2; 3; 3; 3] in
+  check (list int) "same elements" expected result
+
 let () =
   run "bt_bag tests" [
     (
@@ -72,5 +94,9 @@ let () =
       [test_case "test_find" `Quick test_find_case;
        test_case "test_find_opt" `Quick test_find_opt_case
       ]
+    );
+    (
+      "test_merge",
+      [test_case "test_merge" `Quick test_merge]
     )
   ]

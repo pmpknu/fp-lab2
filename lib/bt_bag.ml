@@ -11,6 +11,8 @@ module type Bag = sig
     val find : key -> 'a btree -> int
 
     val find_opt : key -> 'a btree -> int option
+
+    val merge : 'a btree -> 'a btree -> 'a btree
 end
 
 module type OrderedType = sig
@@ -60,4 +62,10 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
           | 0 -> Some count
           | n when n < 0 -> find_opt x left
           | _ -> find_opt x right
+
+    let merge t1 t2 =
+      let t2_values = elements t2 in
+      let add_to_tree t k = add k t in
+      List.fold_left add_to_tree t1 t2_values
+
 end
