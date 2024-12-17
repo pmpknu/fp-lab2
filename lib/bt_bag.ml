@@ -17,6 +17,8 @@ module type Bag = sig
     val remove : key -> 'a btree -> 'a btree
 
     val map : (key -> key) -> 'a btree -> 'a btree
+
+    val filter : (key -> bool) -> 'a btree -> 'a btree
 end
 
 module type OrderedType = sig
@@ -88,4 +90,15 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
         let r' = map f right in
         if left == l' && value == v' && right == r' then t
         else Node {left = l'; value = v'; count; right = r'}
+
+    let rec filter p = function
+      | Empty -> Empty
+      | Node {left; value; count; right} as t ->
+        let l' = filter p left in
+        let pv = p value in
+        let r' = filter p right in
+        if pv then
+          if left == l' && right == r' then t
+          else Node {left = l'; value; count; right = r'}
+        else merge l' r'
 end

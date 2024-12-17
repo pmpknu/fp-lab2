@@ -111,6 +111,22 @@ let test_map () =
   let expected = [2; 2; 3; 3; 4] in
   check (list int) "same elements" expected result
 
+let test_filter () =
+  let module IntBag = Bt_bag.Make(struct
+      type t = int
+      let compare = compare
+    end) in
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 3 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.filter (fun x -> x mod 2 = 0) bag in
+  let result = IntBag.elements bag in
+  let expected = [2; 2] in
+  check (list int) "same elements" expected result
+
 let () =
   run "bt_bag tests" [
     (
@@ -138,5 +154,9 @@ let () =
     (
       "test_map",
       [test_case "test_map" `Quick test_map]
+    );
+    (
+      "test_filter",
+      [test_case "test_filter" `Quick test_filter]
     )
   ]
