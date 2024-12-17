@@ -8,6 +8,8 @@ module type Bag = sig
 
     val elements : 'a btree -> key list
 
+    val find : key -> 'a btree -> int
+
 end
 
 module type OrderedType = sig
@@ -41,4 +43,12 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
       | Empty -> []
       | Node {left; value; count; right} ->
           (elements left) @ (List.init count (fun _ -> value)) @ (elements right)
+  
+    let rec find x = function
+        Empty -> raise Not_found
+      | Node {left; value; count; right} ->
+          match Ord.compare x value with
+          | 0 -> count
+          | n when n < 0 -> find x left
+          | _ -> find x right
 end
