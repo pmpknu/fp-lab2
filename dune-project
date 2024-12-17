@@ -9,13 +9,15 @@
 
 (authors "Dan Gorlyakov")
 
+(maintainers "Dan Gorlyakov")
+
 (license MIT)
 
 ; (documentation https://url/to/documentation)
 
 (package
  (name bt_bag)
- (synopsis "fp lab2")
+ (synopsis "Functional Programming lab2")
  (description "implementation of bag with binary tree")
  (depends ocaml dune (alcotest :with-test) qcheck qcheck-alcotest ppx_expect ocamlformat)
 )

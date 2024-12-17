@@ -1,3 +1,7 @@
 (test
  (name test_bt_bag)
  (libraries alcotest bt_bag))
+
+(test
+ (name test_property)
+ (libraries alcotest qcheck qcheck-alcotest bt_bag))
