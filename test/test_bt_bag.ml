@@ -142,6 +142,37 @@ let test_fold_right () =
   let expected = 1 * 2 + 2 * 2 + 3 * 1 in
   check int "same elements" expected result
 
+let test_fold_left () = 
+  let module IntBag = Bt_bag.Make(struct
+      type t = int
+      let compare = compare
+    end) in
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 3 bag in
+  let bag = IntBag.add 2 bag in
+  let result = IntBag.fold_left (fun acc key count -> acc + key * count) 0 bag in
+  let expected = 1 * 2 + 2 * 2 + 3 * 1 in
+  check int "same elements" expected result
+
+let test_fold_left_right_difference_case () =
+  let module IntBag = Bt_bag.Make(struct
+      type t = int
+      let compare = compare
+    end) in
+  let bag = IntBag.empty in
+  let bag = IntBag.add 5 bag in
+  let bag = IntBag.add 10 bag in
+  let bag = IntBag.add 15 bag in
+  let result_left = IntBag.fold_left (fun acc key count -> acc - key * count) 0 bag in
+  (*let result_right = IntBag.fold_right (fun key count acc -> acc - key * count) bag 0 in*)
+  let expected_left = ((0 - 5) - 10) - 15 in
+  (* let expected_right = 5 - (10 - (15 - 0)) in *)
+  check int "same left" expected_left result_left
+  (* check int "same right" expected_right result_right *)
+
 let () =
   run "bt_bag tests" [
     (
@@ -154,7 +185,8 @@ let () =
     );
     (
       "test_find",
-      [test_case "test_find" `Quick test_find_case;
+      [
+       test_case "test_find" `Quick test_find_case;
        test_case "test_find_opt" `Quick test_find_opt_case
       ]
     );
@@ -176,6 +208,10 @@ let () =
     );
     (
       "test_fold",
-      [test_case "test_fold_right" `Quick test_fold_right]
+      [
+        test_case "test_fold_right" `Quick test_fold_right;
+        test_case "test_fold_left" `Quick test_fold_left;
+        test_case "test_fold_left_right_difference" `Quick test_fold_left_right_difference_case
+      ]
     )
   ]
