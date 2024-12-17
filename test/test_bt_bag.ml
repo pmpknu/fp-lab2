@@ -25,21 +25,37 @@ let test_is_empty_case () =
   let bag = IntBag.add 1 bag in
   check bool "non-empty bag" false (IntBag.is_empty bag)
 
-  let test_find_case () =
-    let module IntBag = Bt_bag.Make(struct
-        type t = int
-        let compare = compare
-      end) in
-    let bag = IntBag.empty in
-    let bag = IntBag.add 1 bag in
-    let bag = IntBag.add 2 bag in
-    let bag = IntBag.add 1 bag in
-    let bag = IntBag.add 3 bag in
-    let bag = IntBag.add 2 bag in
-    check int "find 1" 2 (IntBag.find 1 bag);
-    check int "find 2" 2 (IntBag.find 2 bag);
-    check int "find 3" 1 (IntBag.find 3 bag);
-    check_raises "find 4" Not_found (fun () -> ignore (IntBag.find 4 bag))
+let test_find_case () =
+  let module IntBag = Bt_bag.Make(struct
+      type t = int
+      let compare = compare
+    end) in
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 3 bag in
+  let bag = IntBag.add 2 bag in
+  check int "find 1" 2 (IntBag.find 1 bag);
+  check int "find 2" 2 (IntBag.find 2 bag);
+  check int "find 3" 1 (IntBag.find 3 bag);
+  check_raises "find 4" Not_found (fun () -> ignore (IntBag.find 4 bag))
+
+let test_find_opt_case () =
+  let module IntBag = Bt_bag.Make(struct
+      type t = int
+      let compare = compare
+    end) in
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 3 bag in
+  let bag = IntBag.add 2 bag in
+  check (option int) "find 1" (Some 2) (IntBag.find_opt 1 bag);
+  check (option int) "find 2" (Some 2) (IntBag.find_opt 2 bag);
+  check (option int) "find 3" (Some 1) (IntBag.find_opt 3 bag);
+  check (option int) "find 4" None (IntBag.find_opt 4 bag)
 
 let () =
   run "bt_bag tests" [
@@ -53,6 +69,8 @@ let () =
     );
     (
       "test_find",
-      [test_case "test_find" `Quick test_find_case]
+      [test_case "test_find" `Quick test_find_case;
+       test_case "test_find_opt" `Quick test_find_opt_case
+      ]
     )
   ]

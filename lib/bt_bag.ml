@@ -10,6 +10,7 @@ module type Bag = sig
 
     val find : key -> 'a btree -> int
 
+    val find_opt : key -> 'a btree -> int option
 end
 
 module type OrderedType = sig
@@ -51,4 +52,12 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
           | 0 -> count
           | n when n < 0 -> find x left
           | _ -> find x right
+
+    let rec find_opt x = function
+        Empty -> None
+      | Node {left; value; count; right} ->
+          match Ord.compare x value with
+          | 0 -> Some count
+          | n when n < 0 -> find_opt x left
+          | _ -> find_opt x right
 end
