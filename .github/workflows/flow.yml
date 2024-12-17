@@ -24,6 +24,9 @@ jobs:
           dune-cache: true
 
       - run: opam install . --deps-only --with-test
-
-      - run: opam exec -- dune build @fmt
-      - run: opam exec -- dune test
+      - run: opam install zanuda
+      - run: opam install ounit2
+      - run: rm -rf _build
+      - run: opam exec -- dune build @fmt @check @runtest -j3
+      - run: opam exec -- dune runtest
+      - run: opam exec -- zanuda -no-top_file_license -no-check-filesystem -dir .
