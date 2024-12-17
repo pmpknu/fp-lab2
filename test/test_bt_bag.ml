@@ -127,6 +127,21 @@ let test_filter () =
   let expected = [2; 2] in
   check (list int) "same elements" expected result
 
+let test_fold_right () =
+  let module IntBag = Bt_bag.Make(struct
+      type t = int
+      let compare = compare
+    end) in
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 3 bag in
+  let bag = IntBag.add 2 bag in
+  let result = IntBag.fold_right (fun key count acc -> acc + key * count) bag 0 in
+  let expected = 1 * 2 + 2 * 2 + 3 * 1 in
+  check int "same elements" expected result
+
 let () =
   run "bt_bag tests" [
     (
@@ -158,5 +173,9 @@ let () =
     (
       "test_filter",
       [test_case "test_filter" `Quick test_filter]
+    );
+    (
+      "test_fold",
+      [test_case "test_fold_right" `Quick test_fold_right]
     )
   ]

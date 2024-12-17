@@ -19,6 +19,8 @@ module type Bag = sig
     val map : (key -> key) -> 'a btree -> 'a btree
 
     val filter : (key -> bool) -> 'a btree -> 'a btree
+
+    val fold_right : (key -> int -> 'a -> 'a) -> 'a btree -> 'a -> 'a
 end
 
 module type OrderedType = sig
@@ -101,4 +103,10 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
           if left == l' && right == r' then t
           else Node {left = l'; value; count; right = r'}
         else merge l' r'
+
+    let rec fold_right f s accu =
+      match s with
+        Empty -> accu
+      | Node {left; value; count; right} ->
+          fold_right f right (f value count (fold_right f left accu))
 end
