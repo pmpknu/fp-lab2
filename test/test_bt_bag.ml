@@ -95,6 +95,22 @@ let test_remove () =
   let expected = [1; 2; 2; 3] in
   check (list int) "same elements" expected result
 
+let test_map () =
+  let module IntBag = Bt_bag.Make(struct
+      type t = int
+      let compare = compare
+    end) in
+  let bag = IntBag.empty in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.add 1 bag in
+  let bag = IntBag.add 3 bag in
+  let bag = IntBag.add 2 bag in
+  let bag = IntBag.map (fun x -> x + 1) bag in
+  let result = IntBag.elements bag in
+  let expected = [2; 2; 3; 3; 4] in
+  check (list int) "same elements" expected result
+
 let () =
   run "bt_bag tests" [
     (
@@ -118,5 +134,9 @@ let () =
     (
       "test_remove",
       [test_case "test_remove" `Quick test_remove]
+    );
+    (
+      "test_map",
+      [test_case "test_map" `Quick test_map]
     )
   ]
