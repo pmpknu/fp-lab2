@@ -19,5 +19,5 @@
  (name bt_bag)
  (synopsis "Functional Programming lab2")
  (description "implementation of bag with binary tree")
- (depends ocaml dune (alcotest :with-test) qcheck qcheck-alcotest ppx_expect ocamlformat)
+ (depends ocaml dune (alcotest :with-test) qcheck qcheck-alcotest ppx_expect ocamlformat zanuda)
 )
