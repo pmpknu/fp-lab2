@@ -14,6 +14,8 @@ module type Bag = sig
   val filter : (key -> bool) -> 'a btree -> 'a btree
   val fold_left : ('a -> key -> int -> 'a) -> 'a -> 'a btree -> 'a
   val fold_right : (key -> int -> 'a -> 'a) -> 'a btree -> 'a -> 'a
+
+  val of_list : key list -> 'a btree
 end
 
 module type OrderedType = sig
@@ -132,4 +134,6 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
     | Node { left; value; count; right } ->
       fold_left f (f (fold_left f accu left) value count) right
   ;;
+
+  let of_list l = List.fold_left (fun t x -> add x t) empty l
 end

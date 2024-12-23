@@ -213,6 +213,12 @@ let test_fold_left_right_difference_case () =
   check int "same right" expected_right result_right
 ;;
 
+let test_of_list () =
+  let bag = IntBag.of_list [ 1; 2; 1; 3; 2 ] in
+  let result = IntBag.elements bag in
+  let expected = [ 1; 1; 2; 2; 3 ] in
+  check (list int) "same elements in of_list" expected result
+
 let () =
   run
     "bt_bag tests"
@@ -239,5 +245,6 @@ let () =
             `Quick
             test_fold_left_right_difference_case
         ] )
+    ; "test_of_list", [ test_case "test_of_list" `Quick test_of_list ]
     ]
 ;;
