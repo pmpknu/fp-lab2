@@ -15,7 +15,6 @@ depends: [
   "qcheck-alcotest"
   "ppx_expect"
   "ocamlformat"
-  "zanuda"
   "odoc" {with-doc}
 ]
 build: [
