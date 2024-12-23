@@ -25,5 +25,5 @@ jobs:
 
       - run: opam install . --deps-only --with-test
       - run: rm -rf _build
-      - run: opam exec -- dune build @fmt @check @runtest -j3
+      - run: opam exec -- dune build @fmt
       - run: opam exec -- dune runtest
