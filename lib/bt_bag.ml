@@ -139,13 +139,10 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
   let of_list l = List.fold_left (fun t x -> add x t) empty l
 
   let is_equal t1 t2 =
-    let rec is_equal' t1 t2 =
-      match t1, t2 with
-      | Empty, Empty -> true
-      | Node { left = l1; value = v1; count = c1; right = r1 },
-        Node { left = l2; value = v2; count = c2; right = r2 } ->
-        v1 = v2 && c1 = c2 && is_equal' l1 l2 && is_equal' r1 r2
-      | _ -> false
-    in
-    is_equal' t1 t2
+    let t1_elements = elements t1 in
+    let t2_elements = elements t2 in
+    List.length t1_elements = List.length t2_elements
+    && t1_elements = t2_elements
+  
+  (*let (===) = is_equal*)
 end
