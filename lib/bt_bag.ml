@@ -9,6 +9,7 @@ module type Bag = sig
   val find : key -> 'a btree -> int
   val find_opt : key -> 'a btree -> int option
   val merge : 'a btree -> 'a btree -> 'a btree
+  val ( >>= ) : 'a btree -> 'a btree -> 'a btree
   val remove : key -> 'a btree -> 'a btree
   val map : (key -> key) -> 'a btree -> 'a btree
   val filter : (key -> bool) -> 'a btree -> 'a btree
@@ -17,6 +18,7 @@ module type Bag = sig
 
   val of_list : key list -> 'a btree
   val is_equal : 'a btree -> 'a btree -> bool
+  val ( === ) : 'a btree -> 'a btree -> bool
 end
 
 module type OrderedType = sig
@@ -85,6 +87,8 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
     List.fold_left add_to_tree t1 t2_values
   ;;
 
+  let ( >>= ) = merge
+
   let rec remove x = function
     | Empty -> Empty
     | Node { left; value; count; right } ->
@@ -144,5 +148,5 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
     List.length t1_elements = List.length t2_elements
     && t1_elements = t2_elements
   
-  (*let (===) = is_equal*)
+  let ( === ) = is_equal
 end

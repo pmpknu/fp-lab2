@@ -7,18 +7,19 @@ let count = 1000
 let generate_list = QCheck.(list int)
 let generate_bag = QCheck.map IntBag.of_list generate_list
 
+open IntBag
 let is_equal_test =
   QCheck.Test.make ~count ~name:"is_equal correctness"
   generate_bag (fun bag ->
       bag = bag && IntBag.empty = IntBag.empty)
 
 let merge_empty_is_neutral =
-  QCheck.Test.make ~count ~name:"forall bag: bag merge Empty = Empty merge bag = bag"
+  QCheck.Test.make ~count ~name:"forall bags: bag merge Empty = Empty merge bag = bag"
   generate_bag (fun bag ->
       let empty = IntBag.empty in
       let merged1 = IntBag.merge bag empty in
       let merged2 = IntBag.merge empty bag in
-      if (IntBag.is_equal merged1 bag && IntBag.is_equal merged2 bag) then true
+      if (merged1 === bag && merged2 === bag) then true
       else (
         let debugprint s b = Printf.printf s (String.concat ", " (List.map string_of_int (IntBag.elements b))) in
         debugprint "Failing bag elements    : %s\n" bag;
@@ -27,12 +28,18 @@ let merge_empty_is_neutral =
         false
       ))
 
+let merge_is_associative =
+  QCheck.Test.make ~count ~name:"forall bags: (a merge b) merge c = a merge (b merge c)"
+  (QCheck.triple generate_bag generate_bag generate_bag) (fun (a, b, c) ->
+      (a >>= (b >>= c)) === ((a >>= b) >>= c)
+      )
+
 let () =
   let is_equal_properties =
     List.map QCheck_alcotest.to_alcotest [ is_equal_test ]
   in
   let monoid_properties =
-    List.map QCheck_alcotest.to_alcotest [ merge_empty_is_neutral ]
+    List.map QCheck_alcotest.to_alcotest [ merge_empty_is_neutral; merge_is_associative ]
   in
   Alcotest.run "quickcheck"
     [
