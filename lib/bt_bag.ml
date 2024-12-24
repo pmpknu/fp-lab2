@@ -26,7 +26,7 @@ module type OrderedType = sig
   val compare : t -> t -> int
 end
 
-module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
+module Make (Ord : OrderedType) : Bag with type key = Ord.t = struct
   type key = Ord.t
 
   type 'a btree =
