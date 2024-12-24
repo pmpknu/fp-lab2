@@ -15,7 +15,6 @@ module type Bag = sig
   val filter : (key -> bool) -> 'a btree -> 'a btree
   val fold_left : ('a -> key -> int -> 'a) -> 'a -> 'a btree -> 'a
   val fold_right : (key -> int -> 'a -> 'a) -> 'a btree -> 'a -> 'a
-
   val of_list : key list -> 'a btree
   val is_equal : 'a btree -> 'a btree -> bool
   val ( === ) : 'a btree -> 'a btree -> bool
@@ -145,8 +144,8 @@ module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
   let is_equal t1 t2 =
     let t1_elements = elements t1 in
     let t2_elements = elements t2 in
-    List.length t1_elements = List.length t2_elements
-    && t1_elements = t2_elements
-  
+    List.length t1_elements = List.length t2_elements && t1_elements = t2_elements
+  ;;
+
   let ( === ) = is_equal
 end
