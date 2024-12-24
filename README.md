@@ -37,7 +37,7 @@
 - Реализация модуля описана в [bt_bag.ml](./lib/bt_bag.ml)
 - Для обеспечения полиморфизма используется параметризированая модель([`module Make`](./lib/bt_bag.ml#L29)) взятая по аналогии со стандартной библиотеки `Set`
 ```ocaml
-module Make (Ord : Set.OrderedType) : Bag with type key = Ord.t = struct
+module Make (Ord : OrderedType) : Bag with type key = Ord.t = struct
   type key = Ord.t
 
   type 'a btree =
