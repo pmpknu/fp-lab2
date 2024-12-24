@@ -76,6 +76,26 @@ let test_merge () =
   check (list int) "same elements in merge" expected result
 ;;
 
+let test_merge_empty () =
+  let bag1 = IntBag.empty in
+  let bag2 = IntBag.of_list [ 1; 2; 3; 4; 1; 2; 1 ] in
+  let bag = IntBag.merge bag1 bag2 in
+  let bag' = IntBag.merge bag2 bag1 in
+  let result = IntBag.elements bag in
+  let result' = IntBag.elements bag' in
+  let expected = [ 1; 1; 1; 2; 2; 3; 4 ] in
+  check (list int) "same elements in merge with empty bags" expected result;
+  check (list int) "same elements in merge with empty bags" expected result'
+;;
+
+let test_merge_empty_empty () =
+  let bag1 = IntBag.empty in
+  let bag2 = IntBag.empty in
+  let bag = IntBag.merge bag1 bag2 in
+  let result = IntBag.elements bag in
+  let expected = [] in
+  check (list int) "same elements in merge with empty bags" expected result
+
 let test_remove () =
   let bag = IntBag.empty in
   let bag = IntBag.add 1 bag in
@@ -219,6 +239,15 @@ let test_of_list () =
   let expected = [ 1; 1; 2; 2; 3 ] in
   check (list int) "same elements in of_list" expected result
 
+let test_is_equal () =
+  let bag1 = IntBag.of_list [ 1; 2; 1; 3; 2 ] in
+  let bag2 = IntBag.of_list [ 1; 1; 2; 2; 3 ] in
+  let bag3 = IntBag.of_list [ 1; 1; 2; 2; 3; 4 ] in
+  let bag4 = IntBag.of_list [ 1; 1; 2; 2 ] in
+  check bool "same elements are equal" true (IntBag.is_equal bag1 bag2);
+  check bool "different elements aren't equal" false (IntBag.is_equal bag1 bag3);
+  check bool "different elements aren't equal" false (IntBag.is_equal bag1 bag4)
+
 let () =
   run
     "bt_bag tests"
@@ -228,7 +257,11 @@ let () =
       , [ test_case "test_find" `Quick test_find_case
         ; test_case "test_find_opt" `Quick test_find_opt_case
         ] )
-    ; "test_merge", [ test_case "test_merge" `Quick test_merge ]
+    ; "test_merge",
+       [ test_case "test_merge" `Quick test_merge
+       ; test_case "test_merge_empty" `Quick test_merge_empty
+       ; test_case "test_merge_empty_empty" `Quick test_merge_empty_empty
+       ]
     ; "test_remove", [ test_case "test_remove" `Quick test_remove ]
     ; "test_map", [ test_case "test_map" `Quick test_map ]
     ; "test_filter", [ test_case "test_filter" `Quick test_filter ]
@@ -246,5 +279,6 @@ let () =
             test_fold_left_right_difference_case
         ] )
     ; "test_of_list", [ test_case "test_of_list" `Quick test_of_list ]
+    ; "test_is_equal", [ test_case "test_is_equal" `Quick test_is_equal]
     ]
 ;;
