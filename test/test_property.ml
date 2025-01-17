@@ -12,7 +12,7 @@ open IntBag
 
 let is_equal_test =
   QCheck.Test.make ~count ~name:"is_equal correctness" generate_bag (fun bag ->
-    bag = bag && IntBag.empty = IntBag.empty)
+    bag === bag && IntBag.empty === IntBag.empty)
 ;;
 
 let merge_empty_is_neutral =
